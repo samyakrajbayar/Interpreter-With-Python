@@ -261,62 +261,62 @@ class Scanner:
 class Expr:
     pass
 
-@dataclass
+@dataclass(eq=False)
 class Binary(Expr):
     left: Expr
     operator: Token
     right: Expr
 
-@dataclass
+@dataclass(eq=False)
 class Grouping(Expr):
     expression: Expr
 
-@dataclass
+@dataclass(eq=False)
 class Literal(Expr):
     value: Any
 
-@dataclass
+@dataclass(eq=False)
 class Unary(Expr):
     operator: Token
     right: Expr
 
-@dataclass
+@dataclass(eq=False)
 class Variable(Expr):
     name: Token
 
-@dataclass
+@dataclass(eq=False)
 class Assign(Expr):
     name: Token
     value: Expr
 
-@dataclass
+@dataclass(eq=False)
 class Logical(Expr):
     left: Expr
     operator: Token
     right: Expr
 
-@dataclass
+@dataclass(eq=False)
 class Call(Expr):
     callee: Expr
     paren: Token
     arguments: List[Expr]
 
-@dataclass
+@dataclass(eq=False)
 class Get(Expr):
     object: Expr
     name: Token
 
-@dataclass
+@dataclass(eq=False)
 class Set(Expr):
     object: Expr
     name: Token
     value: Expr
 
-@dataclass
+@dataclass(eq=False)
 class This(Expr):
     keyword: Token
 
-@dataclass
+@dataclass(eq=False)
 class Super(Expr):
     keyword: Token
     method: Token
@@ -324,46 +324,46 @@ class Super(Expr):
 class Stmt:
     pass
 
-@dataclass
+@dataclass(eq=False)
 class Expression(Stmt):
     expression: Expr
 
-@dataclass
+@dataclass(eq=False)
 class Print(Stmt):
     expression: Expr
 
-@dataclass
+@dataclass(eq=False)
 class Var(Stmt):
     name: Token
     initializer: Optional[Expr]
 
-@dataclass
+@dataclass(eq=False)
 class Block(Stmt):
     statements: List[Stmt]
 
-@dataclass
+@dataclass(eq=False)
 class If(Stmt):
     condition: Expr
     then_branch: Stmt
     else_branch: Optional[Stmt]
 
-@dataclass
+@dataclass(eq=False)
 class While(Stmt):
     condition: Expr
     body: Stmt
 
-@dataclass
+@dataclass(eq=False)
 class Function(Stmt):
     name: Token
     params: List[Token]
     body: List[Stmt]
 
-@dataclass
+@dataclass(eq=False)
 class Return(Stmt):
     keyword: Token
     value: Optional[Expr]
 
-@dataclass
+@dataclass(eq=False)
 class Class(Stmt):
     name: Token
     superclass: Optional[Variable]
@@ -1190,6 +1190,8 @@ class Interpreter:
                     return left + right
                 if isinstance(left, str) and isinstance(right, str):
                     return left + right
+                if isinstance(left, str) or isinstance(right, str):
+                    return self.stringify(left) + self.stringify(right)
                 raise LoxRuntimeError(expr.operator, "Operands must be two numbers or two strings.")
             elif expr.operator.type == TokenType.GREATER:
                 self.check_number_operands(expr.operator, left, right)
